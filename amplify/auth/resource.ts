@@ -11,8 +11,14 @@ export const auth = defineAuth({
         scopes: ['email', 'profile'],
       },
       // Add your live Amplify URL here later (Step 29), keep the trailing "/"
-      callbackUrls: ['http://localhost:5173/'],
-      logoutUrls: ['http://localhost:5173/'],
+      callbackUrls: [
+        'http://localhost:5173/',
+        'https://main.dzhhl0srd1h1c.amplifyapp.com/',
+      ],
+      logoutUrls: [
+        'http://localhost:5173/',
+        'https://main.dzhhl0srd1h1c.amplifyapp.com/',
+      ],
     },
   },
   groups: ['Admins', 'Users'],
