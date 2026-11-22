@@ -13,7 +13,7 @@ export const handler: PostConfirmationTriggerHandler = async (event) => {
       GroupName: env.GROUP_NAME,
       Username: event.userName,
       UserPoolId: event.userPoolId,
-    })
+    }),
   );
   console.log(`Added ${event.userName} to ${env.GROUP_NAME}`);
   return event;

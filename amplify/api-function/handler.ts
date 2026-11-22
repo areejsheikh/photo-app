@@ -14,7 +14,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       path: event.path,
       user: claims.email,
       groups,
-    })
+    }),
   );
 
   const isAdmin = String(groups).includes('Admins');

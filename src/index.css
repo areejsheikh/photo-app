@@ -25,7 +25,12 @@ body {
 body {
   font-family: var(--font-body);
   color: var(--plum);
-  background: linear-gradient(160deg, var(--blush) 0%, var(--lilac) 55%, var(--butter) 100%);
+  background: linear-gradient(
+    160deg,
+    var(--blush) 0%,
+    var(--lilac) 55%,
+    var(--butter) 100%
+  );
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
 }

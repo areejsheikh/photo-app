@@ -19,5 +19,5 @@ Amplify.configure({ ...existing, API: { ...existing.API, REST: rest } });
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
-  </StrictMode>
+  </StrictMode>,
 );

@@ -63,7 +63,10 @@ backend.addOutput({
 // ---------- CloudWatch dashboard + alarm ----------
 const monStack = backend.createStack('monitoring');
 const fn = backend.apiFunction.resources.lambda;
-const envName = (process.env.AWS_BRANCH ?? 'sandbox').replace(/[^a-zA-Z0-9_-]/g, '-');
+const envName = (process.env.AWS_BRANCH ?? 'sandbox').replace(
+  /[^a-zA-Z0-9_-]/g,
+  '-',
+);
 const dash = new Dashboard(monStack, 'Dashboard', {
   dashboardName: `PhotoAppDashboard-${envName}`,
 });
@@ -75,7 +78,7 @@ dash.addWidgets(
   new GraphWidget({
     title: 'API Gateway requests / 5xx errors',
     left: [restApi.metricCount(), restApi.metricServerError()],
-  })
+  }),
 );
 new Alarm(monStack, 'LambdaErrorAlarm', {
   metric: fn.metricErrors(),

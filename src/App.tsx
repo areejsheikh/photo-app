@@ -46,7 +46,11 @@ function PhotoCard({ photo, index }: { photo: Photo; index: number }) {
       }
     >
       <div className="polaroid-photo">
-        {url ? <img src={url} alt={photo.caption ?? 'Uploaded photo'} /> : <div className="shimmer" />}
+        {url ? (
+          <img src={url} alt={photo.caption ?? 'Uploaded photo'} />
+        ) : (
+          <div className="shimmer" />
+        )}
       </div>
       <figcaption>{photo.caption ?? ''}</figcaption>
     </figure>
@@ -70,7 +74,9 @@ function Gallery({ signOut }: { signOut?: () => void }) {
     const sub = client.models.Photo.observeQuery().subscribe({
       next: ({ items }) =>
         setPhotos(
-          [...items].sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''))
+          [...items].sort((a, b) =>
+            (b.createdAt ?? '').localeCompare(a.createdAt ?? ''),
+          ),
         ),
       error: (e) => console.error(e),
     });
@@ -81,14 +87,17 @@ function Gallery({ signOut }: { signOut?: () => void }) {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const [attrs, session] = await Promise.all([fetchUserAttributes(), fetchAuthSession()]);
+      const [attrs, session] = await Promise.all([
+        fetchUserAttributes(),
+        fetchAuthSession(),
+      ]);
       if (!alive) return;
       setName(attrs.name ?? attrs.email ?? 'friend');
       const g = session.tokens?.idToken?.payload['cognito:groups'];
       setGroups(
         Array.isArray(g)
           ? g.map(String).filter((x) => x === 'Admins' || x === 'Users')
-          : []
+          : [],
       );
     })().catch(console.error);
     return () => {
@@ -107,7 +116,11 @@ function Gallery({ signOut }: { signOut?: () => void }) {
     try {
       const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
       const path = `pictures/${Date.now()}-${safe}`;
-      await uploadData({ path, data: file, options: { contentType: file.type } }).result;
+      await uploadData({
+        path,
+        data: file,
+        options: { contentType: file.type },
+      }).result;
       await client.models.Photo.create({
         s3Key: path,
         caption: caption.trim() || file.name.replace(/\.[^.]+$/, ''),
@@ -149,11 +162,13 @@ function Gallery({ signOut }: { signOut?: () => void }) {
         time: body.serverTime ?? '',
       });
     } catch (err) {
-      const status = (err as { response?: { statusCode?: number } }).response?.statusCode;
+      const status = (err as { response?: { statusCode?: number } }).response
+        ?.statusCode;
       if (status === 403) {
         setApiView({
           kind: 'denied',
-          message: 'This page is for admins only. Your account is in the Users group.',
+          message:
+            'This page is for admins only. Your account is in the Users group.',
         });
       } else {
         setApiView({
@@ -178,7 +193,8 @@ function Gallery({ signOut }: { signOut?: () => void }) {
         <div>
           <h1 className="brand">Petal Gallery</h1>
           <p className="hello">
-            Hi, {name || '…'}! {isAdmin ? 'You are an admin 👑' : 'Welcome back 🌷'}
+            Hi, {name || '…'}!{' '}
+            {isAdmin ? 'You are an admin 👑' : 'Welcome back 🌷'}
           </p>
           <p className="chips">
             {groups.map((g) => (
@@ -207,7 +223,9 @@ function Gallery({ signOut }: { signOut?: () => void }) {
           if (f) void uploadFile(f);
         }}
       >
-        <p className="drop-title">{busy ? 'Uploading your photo…' : 'Drop a photo here'}</p>
+        <p className="drop-title">
+          {busy ? 'Uploading your photo…' : 'Drop a photo here'}
+        </p>
         <input
           className="caption"
           placeholder="Add a caption (optional)"
@@ -225,7 +243,11 @@ function Gallery({ signOut }: { signOut?: () => void }) {
             if (f) void uploadFile(f);
           }}
         />
-        <button className="btn" disabled={busy} onClick={() => fileRef.current?.click()}>
+        <button
+          className="btn"
+          disabled={busy}
+          onClick={() => fileRef.current?.click()}
+        >
           {busy ? 'Uploading…' : 'Choose a photo'}
         </button>
         <p className="msg" role="status">
@@ -245,12 +267,17 @@ function Gallery({ signOut }: { signOut?: () => void }) {
 
       <section className="api">
         <h2>Secure API check</h2>
-        <p>These buttons call the REST API, which only answers signed-in users.</p>
+        <p>
+          These buttons call the REST API, which only answers signed-in users.
+        </p>
         <div className="row">
           <button className="btn small" onClick={() => void callRest('stats')}>
             My profile (/stats)
           </button>
-          <button className="btn small ghost" onClick={() => void callRest('admin')}>
+          <button
+            className="btn small ghost"
+            onClick={() => void callRest('admin')}
+          >
             Admin only (/admin)
           </button>
         </div>
