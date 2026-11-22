@@ -18,6 +18,8 @@ import { data } from './data/resource';
 import { storage } from './storage/resource';
 import { postConfirmation } from './auth/post-confirmation/resource';
 import { apiFunction } from './api-function/resource';
+// tells TypeScript that Node's "process" exists (it does at build time)
+declare const process: { env: Record<string, string | undefined> };
 
 const backend = defineBackend({
   auth,
@@ -61,8 +63,9 @@ backend.addOutput({
 // ---------- CloudWatch dashboard + alarm ----------
 const monStack = backend.createStack('monitoring');
 const fn = backend.apiFunction.resources.lambda;
+const envName = (process.env.AWS_BRANCH ?? 'sandbox').replace(/[^a-zA-Z0-9_-]/g, '-');
 const dash = new Dashboard(monStack, 'Dashboard', {
-  dashboardName: 'PhotoAppDashboard',
+  dashboardName: `PhotoAppDashboard-${envName}`,
 });
 dash.addWidgets(
   new GraphWidget({
